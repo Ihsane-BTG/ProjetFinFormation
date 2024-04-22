@@ -12,4 +12,9 @@ class Reservation extends Model
     protected $fillable = [
         'name', 'email', 'phone', 'date', 'time', 'seats', 'special_requests'
     ];
+    
+    public function table()
+    {
+        return $this->belongsTo(Table::class);
+    }
 }
