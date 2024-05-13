@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MailController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,4 +39,6 @@ use Illuminate\Support\Facades\Route;
 //     });
 // });
 
-Route::get('/menu', 'MenuController@index');
+// Route::get('/menu', 'MenuController@index');
+
+Route::post('/send-email', [MailController::class, 'sendEmail']);

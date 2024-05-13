@@ -29,13 +29,13 @@ class AuthController extends Controller
             'role_id' => 3,
         ]);
 
-        return response()->json(['message' => 'User registered successfully'], 201);
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json(['token' => $token, 'user' => new UserResource($user)]);
     }
 
     public function login(Request $request)
     {
-        // $data = $request->input();
-        // echo "<pre>"; print_r($data); die;
         $credentials = $request->validate([
             'username' => 'required',
             'password' => 'required',

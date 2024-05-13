@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Reservation;
 use App\Models\Table;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ReservationController extends Controller
 {
@@ -16,28 +17,20 @@ class ReservationController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'phone' => 'required|string',
-            'date' => 'required|date',
-            'time' => 'required|date_format:H:i',
-            'seats' => 'required|integer|min:1',
-            'special_requests' => 'nullable|string',
-        ]);
+        
 
-        $table = Table::where('available', true)->first();
+        // $table = Table::where('available', 1)->first();
 
-        if (!$table) {
-            return response()->json(['error' => 'No tables available at the moment. Please try again later.'], 400);
-        }
+        // if (!$table) {
+        //     return response()->json(['error' => 'No tables available at the moment. Please try again later.'], 400);
+        // }
 
-        $validatedData['table_id'] = $table->id;
-
-        $table->available = false;
-        $table->save();
+        $validatedData = $request->all();
 
         $reservation = Reservation::create($validatedData);
+
+        // $table->available = false;
+        // $table->save();
 
         return response()->json($reservation, 201);
     }
