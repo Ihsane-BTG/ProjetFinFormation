@@ -22,11 +22,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class,'register']);
 Route::post('/login', [AuthController::class,'login']);
-Route::post('/logout', 'AuthController@logout')->middleware('auth:sanctum');
+Route::post('/logout', [AuthController::class,'logout'])->middleware('auth:sanctum');
 
 
 Route::get('/reservations', [ReservationController::class, 'index']);
-Route::post('/restaurant/reservations', [ReservationController::class, 'store']);
+Route::post('/reservations', [ReservationController::class, 'store']);
 Route::get('/reservations/{id}', [ReservationController::class, 'show']);
 Route::put('/reservations/{id}', [ReservationController::class, 'update']);
 Route::delete('/reservations/{id}', [ReservationController::class, 'destroy']);

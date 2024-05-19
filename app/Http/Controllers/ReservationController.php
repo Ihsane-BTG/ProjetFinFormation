@@ -15,25 +15,58 @@ class ReservationController extends Controller
         return response()->json($reservations);
     }
 
-    public function store(Request $request)
-    {
+    // public function store(Request $request)
+    // {
         
 
-        // $table = Table::where('available', 1)->first();
+    //     // $table = Table::where('available', 1)->first();
 
-        // if (!$table) {
-        //     return response()->json(['error' => 'No tables available at the moment. Please try again later.'], 400);
-        // }
+    //     // if (!$table) {
+    //     //     return response()->json(['error' => 'No tables available at the moment. Please try again later.'], 400);
+    //     // }
 
-        $validatedData = $request->all();
+    //     $validatedData = $request->all();
 
-        $reservation = Reservation::create($validatedData);
+    //     $reservation = Reservation::create($validatedData);
 
-        // $table->available = false;
-        // $table->save();
+    //     // $table->available = false;
+    //     // $table->save();
 
-        return response()->json($reservation, 201);
+    //     return response()->json($reservation, 201);
+    // }
+
+    public function store(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email',
+                'phone' => 'required|string|max:20',
+                'date' => 'required|date',
+                'time' => 'required',
+                'seats' => 'required|integer|min:1',
+                'special_requests' => 'nullable|string|max:500'
+            ]);
+            
+            $table = Table::where('name', 'Table 1')->first(); 
+            
+            if (!$table) {
+                return response()->json(['error' => 'Table not found'], 404);
+            }
+            
+            $validatedData['table_id'] = $table->id;            
+            $reservation = Reservation::create($validatedData);
+            
+            if ($reservation) {
+                return response()->json(['message' => 'Reservation created successfully!'], 201);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Error creating reservation: ' . $e->getMessage());
+            return response()->json(['error' => 'Server error while creating reservation'], 500);
+        }
     }
+
 
     public function show($id)
     {

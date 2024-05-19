@@ -26,7 +26,7 @@ class AuthController extends Controller
             'email' => $validatedData['email'],
             'username' => $validatedData['username'],
             'password' => bcrypt($validatedData['password']),
-            'role_id' => 3,
+            'role_id' => 1,
         ]);
 
         $token = $user->createToken('authToken')->plainTextToken;
@@ -41,7 +41,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('username', $credentials['username'])->first();
+        $user = User::with('role')->where('username', $credentials['username'])->first();
 
         if (!$user) {
             return response()->json(['message' => 'User does not exist'], 404);
@@ -55,9 +55,12 @@ class AuthController extends Controller
 
         $token = $user->createToken('authToken')->plainTextToken;
 
-        return response()->json(['token' => $token, 'user' => new UserResource($user)]);
+        return response()->json([
+            'token' => $token, 
+            'user' => new UserResource($user),
+            'role' => $user->role->name 
+        ]);
     }
-
 
     public function user(Request $request)
     {
